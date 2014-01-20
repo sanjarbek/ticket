@@ -12,28 +12,23 @@ use yii\widgets\ActiveForm;
 
 <div class="ticket-form">
 
-	<?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(); ?>
 
-		<?= $form->field($model, 'category_id')->textInput() ?>
+    <?= $form->field($model, 'category_id')->dropDownList($model->getCategoriesList(), ['prompt' => 'Выберите категорию...']) ?>
 
-		<?= $form->field($model, 'title')->textInput(['maxlength' => 100]) ?>
+    <?= $form->field($model, 'title')->textInput(['maxlength' => 100]) ?>
 
-		<?= $form->field($model, 'context')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'content')->textarea(['rows' => 6]) ?>
 
-		<?= $form->field($model, 'created_at')->textInput() ?>
+    <?php
+    if (!$model->isNewRecord)
+        echo $form->field($model, 'status_id')->dropDownList($model->getStatusesList());
+    ?>
 
-		<?= $form->field($model, 'updated_at')->textInput() ?>
+    <div class="form-group">
+        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    </div>
 
-		<?= $form->field($model, 'created_user')->textInput() ?>
-
-		<?= $form->field($model, 'updated_user')->textInput() ?>
-
-		<?= $form->field($model, 'status_id')->textInput() ?>
-
-		<div class="form-group">
-			<?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-		</div>
-
-	<?php ActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>
 
 </div>

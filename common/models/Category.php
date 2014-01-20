@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use yii\base\Model;
+
 /**
  * This is the model class for table "categories".
  *
@@ -13,42 +15,62 @@ namespace common\models;
  * @property integer $created_user
  * @property integer $updated_user
  */
-class Category extends \yii\db\ActiveRecord
+class Category extends BaseModel
 {
-	/**
-	 * @inheritdoc
-	 */
-	public static function tableName()
-	{
-		return 'categories';
-	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function rules()
-	{
-		return [
-			[['parent_id', 'created_user', 'updated_user'], 'integer'],
-			[['title', 'created_at', 'updated_at', 'created_user', 'updated_user'], 'required'],
-			[['created_at', 'updated_at'], 'safe'],
-			[['title'], 'string', 'max' => 100]
-		];
-	}
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'categories';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function attributeLabels()
-	{
-		return [
-			'id' => 'ID',
-			'parent_id' => 'Parent ID',
-			'title' => 'Title',
-			'created_at' => 'Created At',
-			'updated_at' => 'Updated At',
-			'created_user' => 'Created User',
-			'updated_user' => 'Updated User',
-		];
-	}
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['parent_id', 'created_user', 'updated_user'], 'integer'],
+            [['parent_id', 'title'], 'required'],
+            [['created_at', 'updated_at'], 'safe'],
+            [['title'], 'string', 'max' => 100]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'parent_id' => 'Родительская категория',
+            'title' => 'Заголовок',
+            'created_at' => 'Дата создания',
+            'updated_at' => 'Дата редактирования',
+            'created_user' => 'Создал',
+            'updated_user' => 'Редактировал',
+        ];
+    }
+
+    public function getTickets()
+    {
+        return $this->hasMany(Ticket::className(), ['id' => 'category_id']);
+    }
+
+    public function getParentCategories()
+    {
+        $categories = Category::find()->select(['id', 'title'])
+            ->orderBy('title')
+            ->all();
+
+        $categoriesArray = array();
+        foreach ($categories as $key => $category)
+            $categoriesArray[$category->id] = $category->title;
+
+        return $categoriesArray;
+    }
+
 }

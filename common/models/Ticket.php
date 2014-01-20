@@ -8,51 +8,83 @@ namespace common\models;
  * @property integer $id
  * @property integer $category_id
  * @property string $title
- * @property string $context
+ * @property string $content
  * @property integer $status_id
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $created_user
  * @property integer $updated_user
  */
-class Ticket extends \yii\db\ActiveRecord
+class Ticket extends BaseModel
 {
-	/**
-	 * @inheritdoc
-	 */
-	public static function tableName()
-	{
-		return 'tickets';
-	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function rules()
-	{
-		return [
-			[['category_id', 'title', 'context', 'created_at', 'updated_at', 'created_user', 'updated_user'], 'required'],
-			[['category_id', 'status_id', 'created_at', 'updated_at', 'created_user', 'updated_user'], 'integer'],
-			[['context'], 'string'],
-			[['title'], 'string', 'max' => 100]
-		];
-	}
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'tickets';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function attributeLabels()
-	{
-		return [
-			'id' => 'ID',
-			'category_id' => 'Category ID',
-			'title' => 'Title',
-			'context' => 'Context',
-			'status_id' => 'Status ID',
-			'created_at' => 'Created At',
-			'updated_at' => 'Updated At',
-			'created_user' => 'Created User',
-			'updated_user' => 'Updated User',
-		];
-	}
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['category_id', 'title', 'content'], 'required'],
+            [['category_id', 'status_id', 'created_user', 'updated_user'], 'integer'],
+            [['content'], 'string'],
+            [['title'], 'string', 'max' => 100],
+            [['created_at', 'updated_at'], 'safe'],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'category_id' => 'Категория',
+            'title' => 'Заголовок',
+            'content' => 'Описание',
+            'status_id' => 'Статус',
+            'created_at' => 'Дата создания',
+            'updated_at' => 'Дата редактирования',
+            'created_user' => 'Создал',
+            'updated_user' => 'Редактировал',
+        ];
+    }
+
+    public function getCategory()
+    {
+        return $this->hasOne(Category::className(), ['id' => 'category_id']);
+    }
+
+    public function getCategoriesList()
+    {
+        $categories = Category::find()->select(['id', 'title'])
+            ->where('parent_id<>0')
+            ->orderBy('title')
+            ->all();
+
+        $categoriesArray = array();
+        foreach ($categories as $key => $category)
+            $categoriesArray[$category->id] = $category->title;
+
+        return $categoriesArray;
+    }
+
+    public function getStatusesList()
+    {
+        $statuses = Status::find()->all();
+        $statusArray = array();
+        foreach ($statuses as $key => $status)
+            $statusArray[$status->id] = $status->name;
+
+        return $statusArray;
+    }
+
 }
