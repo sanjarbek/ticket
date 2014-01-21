@@ -77,7 +77,7 @@ class Ticket extends BaseModel
         return $categoriesArray;
     }
 
-    static public function getStatusesList()
+    public function getStatusesList()
     {
         $statuses = Status::find()->all();
         $statusArray = array();
@@ -85,22 +85,6 @@ class Ticket extends BaseModel
             $statusArray[$status->id] = $status->name;
 
         return $statusArray;
-    }
-
-    public function getStatus()
-    {
-        return $this->hasOne(Status::className(), ['id' => 'status_id']);
-    }
-
-    public function addComment($comment)
-    {
-        $comment->ticket_id = $this->id;
-        return $comment->save();
-    }
-
-    public function getComments()
-    {
-        return $this->hasMany(Comment::className(), ['ticket_id' => 'id']);
     }
 
 }

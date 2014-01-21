@@ -8,7 +8,7 @@ use yii\grid\GridView;
  * @var yii\data\ActiveDataProvider $dataProvider
  * @var common\models\TicketQuery $searchModel
  */
-$this->title = 'Заявки';
+$this->title = 'Tickets';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="ticket-index">
@@ -17,8 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
 
-    <p class="pull-right">
-        <?= Html::a('Создать заявку', ['create'], ['class' => 'btn btn-success']) ?>
+    <p>
+        <?= Html::a('Create Ticket', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php
@@ -28,24 +28,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             'id',
-            [
-                'attribute' => 'category_id',
-                'filter' => true,
-                'value' => function($data)
-            {
-                return $data->category->title;
-            },
-            ],
+            'category_id',
             'title',
             'content:ntext',
-            [
-                'attribute' => 'status_id',
-                'filter' => common\models\Ticket::getStatusesList(),
-                'value' => function($data)
-            {
-                return $data->status->name;
-            },
-            ],
+            'status_id',
             // 'created_at',
             // 'updated_at',
             // 'created_user',
