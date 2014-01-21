@@ -5,12 +5,12 @@ use yii\widgets\ActiveForm;
 
 /**
  * @var yii\web\View $this
- * @var common\models\CategoryQuery $model
+ * @var common\models\CommentQuery $model
  * @var yii\widgets\ActiveForm $form
  */
 ?>
 
-<div class="category-search">
+<div class="comment-search">
 
     <?php
     $form = ActiveForm::begin([
@@ -21,13 +21,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'parent_id') ?>
+    <?= $form->field($model, 'ticket_id') ?>
 
-    <?= $form->field($model, 'title') ?>
-
-    <?= $form->field($model, 'created_at') ?>
-
-    <?= $form->field($model, 'updated_at') ?>
+    <?= $form->field($model, 'content') ?>
 
     <?php // echo $form->field($model, 'created_user') ?>
 

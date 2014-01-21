@@ -3,16 +3,17 @@
 namespace common\models;
 
 /**
- * This is the model class for table "statuses".
+ * This is the model class for table "comments".
  *
  * @property integer $id
- * @property string $name
+ * @property integer $ticket_id
+ * @property string $content
  * @property string $created_at
  * @property string $updated_at
  * @property integer $created_user
  * @property integer $updated_user
  */
-class Status extends BaseModel
+class Comment extends BaseModel
 {
 
     /**
@@ -20,7 +21,7 @@ class Status extends BaseModel
      */
     public static function tableName()
     {
-        return 'statuses';
+        return 'comments';
     }
 
     /**
@@ -29,10 +30,10 @@ class Status extends BaseModel
     public function rules()
     {
         return [
-            [['name'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['created_user', 'updated_user'], 'integer'],
-            [['name'], 'string', 'max' => 30]
+            [['ticket_id', 'created_user', 'updated_user'], 'integer'],
+            [['content'], 'required'],
+            [['created_at', 'updated_at', 'created_user', 'updated_user'], 'safe'],
+            [['content'], 'string']
         ];
     }
 
@@ -43,7 +44,8 @@ class Status extends BaseModel
     {
         return [
             'id' => 'ID',
-            'name' => 'Название',
+            'ticket_id' => 'Номер заявки',
+            'content' => 'Описание',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата редактирования',
             'created_user' => 'Создал',

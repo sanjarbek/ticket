@@ -5,13 +5,13 @@ use yii\widgets\DetailView;
 
 /**
  * @var yii\web\View $this
- * @var common\models\Status $model
+ * @var common\models\Comment $model
  */
-$this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Статусы', 'url' => ['index']];
+$this->title = $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Комментарии', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="status-view">
+<div class="comment-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -31,17 +31,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'name',
+            'ticket_id',
+            'content',
             'created_at',
             'updated_at',
-            [
-                'name' => 'created_user',
-                'value' => $model->createdUser->username
-            ],
-            [
-                'name' => 'updated_user',
-                'value' => $model->updatedUser->username
-            ],
+            'created_user',
+            'updated_user',
         ],
     ]);
     ?>

@@ -6,19 +6,19 @@ use yii\grid\GridView;
 /**
  * @var yii\web\View $this
  * @var yii\data\ActiveDataProvider $dataProvider
- * @var common\models\CategoryQuery $searchModel
+ * @var common\models\CommentQuery $searchModel
  */
-$this->title = 'Категории';
+$this->title = 'Комментарии';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="category-index">
+<div class="comment-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
 
     <p class="pull-right">
-        <?= Html::a('Создать категорию', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Создать комментарий', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php
@@ -28,14 +28,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             'id',
-            [
-                'attribute' => 'parent_id',
-                'value' => function($data)
-            {
-                return $data->parent->title;
-            }
-            ],
-            'title',
+            'ticket_id',
+            'content',
+//            'created_at',
+//            'updated_at',
+            // 'created_user',
+            // 'updated_user',
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]);

@@ -4,13 +4,13 @@ use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
- * @var common\models\Ticket $model
+ * @var common\models\Comment $model
  */
-$this->title = 'Создать заявку';
-$this->params['breadcrumbs'][] = ['label' => 'Заявки', 'url' => ['index']];
+$this->title = 'Создать комментарий';
+$this->params['breadcrumbs'][] = ['label' => 'Комментарии', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="ticket-create">
+<div class="comment-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
