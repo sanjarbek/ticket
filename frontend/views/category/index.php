@@ -8,36 +8,37 @@ use yii\grid\GridView;
  * @var yii\data\ActiveDataProvider $dataProvider
  * @var common\models\CategoryQuery $searchModel
  */
-
-$this->title = 'Categories';
+$this->title = 'Категории';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="category-index">
 
-	<h1><?= Html::encode($this->title) ?></h1>
+    <h1><?= Html::encode($this->title) ?></h1>
 
-	<?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
 
-	<p>
-		<?= Html::a('Create Category', ['create'], ['class' => 'btn btn-success']) ?>
-	</p>
+    <p class="pull-right">
+        <?= Html::a('Создать категорию', ['create'], ['class' => 'btn btn-success']) ?>
+    </p>
 
-	<?php echo GridView::widget([
-		'dataProvider' => $dataProvider,
-		'filterModel' => $searchModel,
-		'columns' => [
-			['class' => 'yii\grid\SerialColumn'],
-
-			'id',
-			'parent_id',
-			'title',
-			'created_at',
-			'updated_at',
-			// 'created_user',
-			// 'updated_user',
-
-			['class' => 'yii\grid\ActionColumn'],
-		],
-	]); ?>
+    <?php
+    echo GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+            'id',
+            [
+                'attribute' => 'parent_id',
+                'value' => function($data)
+            {
+                return $data->parent->title;
+            }
+            ],
+            'title',
+            ['class' => 'yii\grid\ActionColumn'],
+        ],
+    ]);
+    ?>
 
 </div>

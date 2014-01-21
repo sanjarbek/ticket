@@ -60,7 +60,7 @@ class Category extends BaseModel
         return $this->hasMany(Ticket::className(), ['id' => 'category_id']);
     }
 
-    public function getParentCategories()
+    public function getCategoriesList()
     {
         $categories = Category::find()->select(['id', 'title'])
             ->orderBy('title')
@@ -71,6 +71,13 @@ class Category extends BaseModel
             $categoriesArray[$category->id] = $category->title;
 
         return $categoriesArray;
+    }
+
+    public function getParent()
+    {
+        if ($this->id == 1)
+            return $this;
+        return Category::find($this->parent_id);
     }
 
 }

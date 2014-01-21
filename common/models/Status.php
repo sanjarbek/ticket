@@ -51,14 +51,4 @@ class Status extends BaseModel
         ];
     }
 
-    public function getCreatedUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'created_user']);
-    }
-
-    public function getUpdatedUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'updated_user']);
-    }
-
 }

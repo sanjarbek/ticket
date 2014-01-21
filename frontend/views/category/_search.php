@@ -12,30 +12,32 @@ use yii\widgets\ActiveForm;
 
 <div class="category-search">
 
-	<?php $form = ActiveForm::begin([
-		'action' => ['index'],
-		'method' => 'get',
-	]); ?>
+    <?php
+    $form = ActiveForm::begin([
+            'action' => ['index'],
+            'method' => 'get',
+    ]);
+    ?>
 
-		<?= $form->field($model, 'id') ?>
+    <?= $form->field($model, 'id') ?>
 
-		<?= $form->field($model, 'parent_id') ?>
+    <?= $form->field($model, 'parent_id') ?>
 
-		<?= $form->field($model, 'title') ?>
+    <?= $form->field($model, 'title') ?>
 
-		<?= $form->field($model, 'created_at') ?>
+    <?= $form->field($model, 'created_at') ?>
 
-		<?= $form->field($model, 'updated_at') ?>
+    <?= $form->field($model, 'updated_at') ?>
 
-		<?php // echo $form->field($model, 'created_user') ?>
+    <?php // echo $form->field($model, 'created_user') ?>
 
-		<?php // echo $form->field($model, 'updated_user') ?>
+    <?php // echo $form->field($model, 'updated_user')  ?>
 
-		<div class="form-group">
-			<?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-			<?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
-		</div>
+    <div class="form-group">
+        <?= Html::submitButton('Поиск', ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton('Очистить', ['class' => 'btn btn-default']) ?>
+    </div>
 
-	<?php ActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>
 
 </div>
