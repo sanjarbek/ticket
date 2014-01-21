@@ -92,4 +92,15 @@ class Ticket extends BaseModel
         return $this->hasOne(Status::className(), ['id' => 'status_id']);
     }
 
+    public function addComment($comment)
+    {
+        $comment->ticket_id = $this->id;
+        return $comment->save();
+    }
+
+    public function getComments()
+    {
+        return $this->hasMany(Comment::className(), ['ticket_id' => 'id']);
+    }
+
 }

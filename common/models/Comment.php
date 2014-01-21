@@ -33,7 +33,7 @@ class Comment extends BaseModel
             [['ticket_id', 'created_user', 'updated_user'], 'integer'],
             [['content'], 'required'],
             [['created_at', 'updated_at', 'created_user', 'updated_user'], 'safe'],
-            [['content'], 'string', 'max' => 30]
+            [['content'], 'string']
         ];
     }
 

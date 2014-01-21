@@ -48,8 +48,12 @@ class TicketController extends Controller
      */
     public function actionView($id)
     {
+        $ticket = Ticket::find($id);
+        $comment = new \common\models\Comment();
+        $comment = $this->newComment($ticket);
         return $this->render('view', [
-                'model' => $this->findModel($id),
+                'model' => $ticket,
+                'comment' => $comment,
         ]);
     }
 
@@ -61,6 +65,8 @@ class TicketController extends Controller
     public function actionCreate()
     {
         $model = new Ticket;
+
+        $model->status_id = 1;
 
         if ($model->load($_POST) && $model->save())
         {
@@ -122,6 +128,25 @@ class TicketController extends Controller
         {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    protected function newComment($post)
+    {
+        $comment = new \common\models\Comment();
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'comment-form')
+        {
+            echo \yii\widgets\ActiveForm::validate($comment);
+            Yii::app()->end();
+        }
+        if (isset($_POST['Comment']))
+        {
+            $comment->attributes = $_POST['Comment'];
+            if ($post->addComment($comment))
+            {
+                $this->refresh();
+            }
+        }
+        return $comment;
     }
 
 }

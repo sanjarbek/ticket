@@ -12,9 +12,14 @@ use yii\widgets\ActiveForm;
 
 <div class="comment-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php
+    $form = ActiveForm::begin([
+            'id' => 'comment-form',
+            'enableAjaxValidation' => false,
+    ]);
+    ?>
 
-    <?= $form->field($model, 'ticket_id')->textInput() ?>
+    <?php // $form->field($model, 'ticket_id', ['template' => '{input}'])->input('hidden') ?>
 
     <?= $form->field($model, 'content')->textarea() ?>
 
