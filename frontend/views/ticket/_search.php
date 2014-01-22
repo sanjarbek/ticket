@@ -1,7 +1,9 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use kartik\widgets\ActiveForm;
+use kartik\widgets\DatePicker;
+use kartik\widgets\Select2;
 
 /**
  * @var yii\web\View $this
@@ -16,31 +18,66 @@ use yii\widgets\ActiveForm;
     $form = ActiveForm::begin([
             'action' => ['index'],
             'method' => 'get',
+            'type' => ActiveForm::TYPE_VERTICAL,
+    ]);
+    ?>
+    <?php
+    echo $form->field($model, 'category_id')
+        ->dropDownList(common\models\Ticket::getCategoriesList(), [
+            'prompt' => 'Выберите категорию...'
+    ]);
+    ?>
+    <?php
+//    echo Select2::widget([
+//        'model' => $model,
+//        'attribute' => 'category_id',
+//        'form' => $form,
+//        'data' => common\models\Ticket::getCategoriesList(),
+//        'options' => [
+//            'placeholder' => 'Выберите категорию...'
+//        ],
+//        'pluginOptions' => [
+//            'allowClear' => true
+//        ],
+//    ]);
+    ?>
+
+    <?php // echo $form->field($model, 'title')   ?>
+
+    <?php // echo $form->field($model, 'content')    ?>
+
+    <?php // echo $form->field($model, 'status_id')    ?>
+
+    <?php // echo $form->field($model, 'created_at')   ?>
+
+    <?php
+    echo DatePicker::widget([
+        'model' => $model,
+        'form' => $form,
+        'attribute' => 'created_at',
+        'options' => [
+            'placeholder' => 'Выберите дату заявки...',
+        ],
+        'pluginOptions' => [
+            'language' => 'ru',
+            'format' => 'yyyy-mm-dd',
+            'todayHighlight' => true,
+            'autoclose' => true
+        ]
     ]);
     ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?php // echo $form->field($model, 'updated_at')    ?>
 
-    <?= $form->field($model, 'category_id') ?>
+    <?php // echo $form->field($model, 'created_user')    ?>
 
-    <?= $form->field($model, 'title') ?>
+    <?php // echo $form->field($model, 'updated_user')      ?>
 
-    <?= $form->field($model, 'content') ?>
-
-    <?= $form->field($model, 'status_id') ?>
-
-    <?php // echo $form->field($model, 'created_at') ?>
-
-    <?php // echo $form->field($model, 'updated_at') ?>
-
-    <?php // echo $form->field($model, 'created_user') ?>
-
-    <?php // echo $form->field($model, 'updated_user')  ?>
-
-    <div class="form-group">
+    <div class="form-group pull-right">
         <?= Html::submitButton('Поиск', ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton('Очистить', ['class' => 'btn btn-default']) ?>
     </div>
+    <div class="clearfix"></div>
 
     <?php ActiveForm::end(); ?>
 

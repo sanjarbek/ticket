@@ -25,8 +25,8 @@ class TicketQuery extends Model
     public function rules()
     {
         return [
-            [['id', 'category_id', 'status_id', 'created_at', 'updated_at', 'created_user', 'updated_user'], 'integer'],
-            [['title', 'content'], 'safe'],
+            [['id', 'category_id', 'status_id', 'created_user', 'updated_user'], 'integer'],
+            [['title', 'created_at'], 'safe'],
         ];
     }
 
@@ -37,14 +37,14 @@ class TicketQuery extends Model
     {
         return [
             'id' => 'ID',
-            'category_id' => 'Category ID',
-            'title' => 'Title',
-            'content' => 'Context',
-            'status_id' => 'Status ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'created_user' => 'Created User',
-            'updated_user' => 'Updated User',
+            'category_id' => 'Категория',
+            'title' => 'Заголовок заявки',
+            'content' => 'Описание',
+            'status_id' => 'Статус',
+            'created_at' => 'Дата заявки',
+            'updated_at' => 'Дата редактирования',
+            'created_user' => 'Создал',
+            'updated_user' => 'Редактировал',
         ];
     }
 
@@ -65,7 +65,7 @@ class TicketQuery extends Model
         $this->addCondition($query, 'title', true);
         $this->addCondition($query, 'content', true);
         $this->addCondition($query, 'status_id');
-        $this->addCondition($query, 'created_at');
+        $this->addCondition($query, 'created_at', true);
         $this->addCondition($query, 'updated_at');
         $this->addCondition($query, 'created_user');
         $this->addCondition($query, 'updated_user');

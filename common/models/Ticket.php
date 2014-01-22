@@ -63,7 +63,7 @@ class Ticket extends BaseModel
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
-    public function getCategoriesList()
+    static public function getCategoriesList()
     {
         $categories = Category::find()->select(['id', 'title'])
             ->where('parent_id<>0')

@@ -14,6 +14,8 @@ use yii\web\VerbFilter;
 class TicketController extends Controller
 {
 
+    public $layout = 'main.php';
+
     public function behaviors()
     {
         return [
@@ -32,12 +34,19 @@ class TicketController extends Controller
      */
     public function actionIndex()
     {
+        $this->layout = 'layout1.php';
         $searchModel = new TicketQuery;
         $dataProvider = $searchModel->search($_GET);
+
+        $ticket = Ticket::find(1);
+        $comment = new \common\models\Comment();
+        $comment = $this->newComment($ticket);
 
         return $this->render('index', [
                 'dataProvider' => $dataProvider,
                 'searchModel' => $searchModel,
+                'model' => $ticket,
+                'comment' => $comment,
         ]);
     }
 

@@ -13,44 +13,48 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="ticket-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <!--<h1><?php // echo Html::encode($this->title)            ?></h1>-->
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
+    <?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p class="pull-right">
-        <?= Html::a('Создать заявку', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <!--<p class="pull-right">-->
+    <?php // echo Html::a('Создать заявку', ['create'], ['class' => 'btn btn-success']) ?>
+    <!--</p>-->
 
     <?php
     echo GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+//        'filterModel' => $searchModel,
+        'layout' => '{summary}{items}{pager}',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'id',
-            [
-                'attribute' => 'category_id',
-                'filter' => true,
-                'value' => function($data)
-            {
-                return $data->category->title;
-            },
-            ],
+//            'id',
+//            [
+//                'attribute' => 'category_id',
+//                'filter' => false,
+//                'value' => function($data)
+//            {
+//                return $data->category->title;
+//            },
+//            ],
             'title',
-            'content:ntext',
-            [
-                'attribute' => 'status_id',
-                'filter' => common\models\Ticket::getStatusesList(),
-                'value' => function($data)
-            {
-                return $data->status->name;
-            },
-            ],
+//            'content:ntext',
+//            [
+//                'attribute' => 'status_id',
+//                'filter' => common\models\Ticket::getStatusesList(),
+//                'value' => function($data)
+//            {
+//                return $data->status->name;
+//            },
+//            ],
             // 'created_at',
             // 'updated_at',
             // 'created_user',
             // 'updated_user',
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view}',
+            ],
         ],
     ]);
     ?>
