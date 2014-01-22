@@ -38,15 +38,9 @@ class TicketController extends Controller
         $searchModel = new TicketQuery;
         $dataProvider = $searchModel->search($_GET);
 
-        $ticket = Ticket::find(1);
-        $comment = new \common\models\Comment();
-        $comment = $this->newComment($ticket);
-
         return $this->render('index', [
                 'dataProvider' => $dataProvider,
                 'searchModel' => $searchModel,
-                'model' => $ticket,
-                'comment' => $comment,
         ]);
     }
 
@@ -57,6 +51,7 @@ class TicketController extends Controller
      */
     public function actionView($id)
     {
+        $this->layout = 'iframe-main.php';
         $ticket = Ticket::find($id);
         $comment = new \common\models\Comment();
         $comment = $this->newComment($ticket);
@@ -73,6 +68,8 @@ class TicketController extends Controller
      */
     public function actionCreate()
     {
+        $this->layout = 'iframe-main.php';
+
         $model = new Ticket;
 
         $model->status_id = 1;
@@ -96,6 +93,7 @@ class TicketController extends Controller
      */
     public function actionUpdate($id)
     {
+        $this->layout = 'iframe-main.php';
         $model = $this->findModel($id);
 
         if ($model->load($_POST) && $model->save())

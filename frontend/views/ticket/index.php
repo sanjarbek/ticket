@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="ticket-index">
 
-    <!--<h1><?php // echo Html::encode($this->title)            ?></h1>-->
+    <!--<h1><?php // echo Html::encode($this->title)                                 ?></h1>-->
 
     <?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -47,13 +47,18 @@ $this->params['breadcrumbs'][] = $this->title;
 //                return $data->status->name;
 //            },
 //            ],
-            // 'created_at',
-            // 'updated_at',
-            // 'created_user',
-            // 'updated_user',
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view}',
+                'buttons' => [
+                    'view' => function($url, $model)
+                {
+                    return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', '#', [
+                            'title' => Yii::t('yii', 'View'),
+                            'onClick' => "javascript: $('#ticket-content').attr('src', '" . $url . "')",
+                    ]);
+                }
+                ],
             ],
         ],
     ]);

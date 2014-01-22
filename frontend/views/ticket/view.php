@@ -8,52 +8,40 @@ use yii\widgets\DetailView;
  * @var common\models\Ticket $model
  */
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Заявки', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+//$this->params['breadcrumbs'][] = ['label' => 'Заявки', 'url' => ['index']];
+//$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="ticket-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p class="pull-right">
-        <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+    <h3>#
         <?php
-        echo Html::a('Удалить', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data-confirm' => Yii::t('app', 'Are you sure to delete this item?'),
-            'data-method' => 'post',
-        ]);
+        echo $model->id . '. ';
+        echo Html::encode($this->title)
+        ?>
+    </h3>
+
+    <div>
+        <p class="pull-left small"><strong>Создал: </strong><i><?= $model->createdUser->username ?></i></p>
+        <p class="pull-right">
+            <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn-sm btn-primary']) ?></p>
+    </div>
+    <div class="clearfix"></div>
+    <div>
+        <p class="pull-left small"><strong>Дата создания: </strong><?= date('d.m.Y H:i:s', strtotime($model->created_at)) ?> </p>
+    </div>
+    <div class="clearfix"></div>
+    <div>
+        <p class="pull-left small"><strong>Статус: </strong><?= $model->status->name; ?></p>
+    </div>
+    <div class="clearfix"></div>
+    <hr />
+
+    <p><strong>Описание</strong></p>
+    <p>
+        <?php
+        echo $model->content;
         ?>
     </p>
-
-    <?php
-    echo DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            [
-                'name' => 'category_id',
-                'value' => $model->category->title,
-            ],
-            'title',
-            'content:ntext',
-            [
-                'name' => 'status_id',
-                'value' => $model->status->name,
-            ],
-            'created_at',
-            'updated_at',
-            [
-                'name' => 'created_user',
-                'value' => $model->createdUser->username,
-            ],
-            [
-                'name' => 'updated_user',
-                'value' => $model->updatedUser->username,
-            ],
-        ],
-    ]);
-    ?>
+    <hr />
     <div id="comments">
         <?php
         echo $this->render('_comments', array(
@@ -61,14 +49,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'comments' => $model->comments,
         ));
         ?>
-
+        <hr>
         <h3>Добавить новый комментарий</h3>
 
-        <?php // if (Yii::app()->user->hasFlash('commentSubmitted')): ?>
+        <?php // if (Yii::app()->user->hasFlash('commentSubmitted')):     ?>
         <!--        <div class="flash-success">
-        <?php // echo Yii::app()->user->getFlash('commentSubmitted'); ?>
+        <?php // echo Yii::app()->user->getFlash('commentSubmitted');     ?>
                 </div>-->
-        <hr>
+
         <?php
         echo $this->render('/comment/_form', [
             'model' => $comment,

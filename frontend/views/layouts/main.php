@@ -35,7 +35,15 @@ AppAsset::register($this);
             ]);
             $menuItems = [
                 ['label' => 'Главная', 'url' => ['/ticket']],
-                ['label' => 'Новая заявка', 'url' => ['/ticket/create']],
+                [
+                    'label' => 'Новая заявка',
+                    'url' => '#',
+                    'visible' => true,
+                    'linkOptions' => [
+                        'id' => 'testLink',
+                        'onClick' => "javascript: $('#ticket-content').attr('src', '" . \yii::$app->urlManager->createUrl('/ticket/create') . "')",
+                    ],
+                ],
 //                ['label' => 'Contact', 'url' => ['/site/contact']],
             ];
             if (Yii::$app->user->isGuest)

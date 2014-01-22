@@ -74,8 +74,8 @@ use kartik\widgets\Select2;
     <?php // echo $form->field($model, 'updated_user')      ?>
 
     <div class="form-group pull-right">
-        <?= Html::submitButton('Поиск', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Очистить', ['class' => 'btn btn-default']) ?>
+        <?= Html::submitButton('Поиск', ['class' => 'btn btn-sm btn-primary']) ?>
+        <?= Html::resetButton('Очистить', ['class' => 'btn btn-sm btn-default']) ?>
     </div>
     <div class="clearfix"></div>
 

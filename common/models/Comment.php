@@ -53,4 +53,9 @@ class Comment extends BaseModel
         ];
     }
 
+    public function getTicket()
+    {
+        return $this->hasOne(Ticket::className(), ['id' => 'ticket_id']);
+    }
+
 }
