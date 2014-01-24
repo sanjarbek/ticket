@@ -30,8 +30,11 @@ class User extends ActiveRecord implements IdentityInterface
     public $password;
 
     const STATUS_DELETED = 0;
-    const STATUS_ACTIVE = 10;
-    const ROLE_USER = 10;
+    const STATUS_ACTIVE = 1;
+    const ROLE_ADMIN = 0;
+    const ROLE_MODERATOR = 1;
+    const ROLE_TECHNICIAN = 2;
+    const ROLE_USER = 3;
 
     public function behaviors()
     {
@@ -151,6 +154,48 @@ class User extends ActiveRecord implements IdentityInterface
             return true;
         }
         return false;
+    }
+
+    public function getStatusOptions()
+    {
+        return array(
+            self::STATUS_DELETED => \yii::t('status', 'Неактивный'),
+            self::STATUS_ACTIVE => \yii::t('status', 'Активный'),
+        );
+    }
+
+    /**
+     *
+     * @return status text presentation
+     */
+    public function getStatusText()
+    {
+        $statusOptions = $this->getStatusOptions();
+        return (isset($statusOptions[$this->status]) ?
+                $statusOptions[$this->status] :
+                \yii::t('status', 'Неизвестный статус: ') . $this->status);
+    }
+
+    public function getRoleOptions()
+    {
+        return array(
+            self::ROLE_ADMIN => \yii::t('role', 'Администратор'),
+            self::ROLE_MODERATOR => \yii::t('role', 'Модератор'),
+            self::ROLE_TECHNICIAN => \yii::t('role', 'Тех. поддержка'),
+            self::ROLE_USER => \yii::t('role', 'Пользователь'),
+        );
+    }
+
+    /**
+     *
+     * @return role text presentation
+     */
+    public function getRoleText()
+    {
+        $roleOptions = $this->getRoleOptions();
+        return (isset($roleOptions[$this->role]) ?
+                $roleOptions[$this->role] :
+                \yii::t('status', 'Неизвестный статус: ') . $this->role);
     }
 
 }
