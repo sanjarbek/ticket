@@ -3,14 +3,11 @@
     <?= $content; ?>
 </div>
 <div class="col-sm-8">
-    <div class="row">
-        <iframe id="ticket-content"
-                onload="iframeLoaded()"
-                class="well well-sm col-sm-8"
-                style="width: 100%;"
-                src="http://helpdesk.test/index.php?r=ticket/view&id=2">
-        </iframe>   
-    </div>
+    <iframe id="ticket-content"
+            onload="iframeLoaded()"
+            style="width: 100%; border: none;"
+            src="http://helpdesk.test/index.php?r=ticket/create">
+    </iframe>
 </div>
 <?php
 $this->registerJs('

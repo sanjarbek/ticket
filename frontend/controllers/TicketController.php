@@ -76,6 +76,11 @@ class TicketController extends Controller
 
         if ($model->load($_POST) && $model->save())
         {
+            $statusLog = new \common\models\StatusLog();
+            $statusLog->status_id = 1;
+            $statusLog->ticket_id = $model->id;
+            $statusLog->begin_at = new \yii\db\Expression('NOW()');
+            $statusLog->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else
         {
@@ -96,8 +101,18 @@ class TicketController extends Controller
         $this->layout = 'iframe-main.php';
         $model = $this->findModel($id);
 
+        $oldStatusLog = $model->currentLog;
+
+
         if ($model->load($_POST) && $model->save())
         {
+            $newStatusLog = new \common\models\StatusLog();
+            $oldStatusLog->end_at = new \yii\db\Expression('NOW()');
+            $oldStatusLog->save();
+            $newStatusLog->ticket_id = $model->id;
+            $newStatusLog->status_id = $model->status_id;
+            $newStatusLog->begin_at = $oldStatusLog->end_at;
+            $newStatusLog->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else
         {

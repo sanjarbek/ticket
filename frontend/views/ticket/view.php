@@ -20,7 +20,7 @@ $this->title = $model->title;
     </h3>
 
     <div>
-        <p class="pull-left small"><strong>Создал: </strong><i><?= $model->createdUser->username ?></i></p>
+        <p class="pull-left small"><strong>Создал: </strong><i><?= $model->createdUser->showName() ?></i></p>
         <p class="pull-right">
             <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn-sm btn-primary']) ?></p>
     </div>

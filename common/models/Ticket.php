@@ -103,4 +103,9 @@ class Ticket extends BaseModel
         return $this->hasMany(Comment::className(), ['ticket_id' => 'id']);
     }
 
+    public function getCurrentLog()
+    {
+        return $this->hasOne(StatusLog::className(), ['id' => 'status_id']);
+    }
+
 }

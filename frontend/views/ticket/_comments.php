@@ -10,7 +10,7 @@ foreach ($comments as $comment):
             <?= date('d.m.Y H:i:s', strtotime($comment->created_at)) ?>
         </p>
         <div class="author">
-            <strong><?= $comment->createdUser->username ?></strong> написал
+            <strong><?= $comment->createdUser->showName() ?></strong> написал
         </div>
         <div class="clearfix"></div>
         <div class="content">

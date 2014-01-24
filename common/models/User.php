@@ -198,4 +198,9 @@ class User extends ActiveRecord implements IdentityInterface
                 \yii::t('status', 'Неизвестный статус: ') . $this->role);
     }
 
+    public function showName()
+    {
+        return $this->username;
+    }
+
 }

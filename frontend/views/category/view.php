@@ -40,11 +40,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'updated_at',
             [
                 'name' => 'created_user',
-                'value' => $model->createdUser->username
+                'value' => $model->createdUser->showName()
             ],
             [
                 'name' => 'updated_user',
-                'value' => $model->updatedUser->username
+                'value' => $model->updatedUser->showName()
             ],
         ],
     ]);
