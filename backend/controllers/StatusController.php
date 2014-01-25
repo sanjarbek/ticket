@@ -1,17 +1,17 @@
 <?php
 
-namespace frontend\controllers;
+namespace backend\controllers;
 
-use common\models\Comment;
-use common\models\CommentQuery;
+use common\models\Status;
+use common\models\StatusQuery;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\VerbFilter;
 
 /**
- * CommentController implements the CRUD actions for Comment model.
+ * StatusController implements the CRUD actions for Status model.
  */
-class CommentController extends Controller
+class StatusController extends Controller
 {
 
     public function behaviors()
@@ -27,12 +27,12 @@ class CommentController extends Controller
     }
 
     /**
-     * Lists all Comment models.
+     * Lists all Status models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new CommentQuery;
+        $searchModel = new StatusQuery;
         $dataProvider = $searchModel->search($_GET);
 
         return $this->render('index', [
@@ -42,7 +42,7 @@ class CommentController extends Controller
     }
 
     /**
-     * Displays a single Comment model.
+     * Displays a single Status model.
      * @param integer $id
      * @return mixed
      */
@@ -54,13 +54,13 @@ class CommentController extends Controller
     }
 
     /**
-     * Creates a new Comment model.
+     * Creates a new Status model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Comment;
+        $model = new Status;
 
         if ($model->load($_POST) && $model->save())
         {
@@ -74,7 +74,7 @@ class CommentController extends Controller
     }
 
     /**
-     * Updates an existing Comment model.
+     * Updates an existing Status model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -95,7 +95,7 @@ class CommentController extends Controller
     }
 
     /**
-     * Deletes an existing Comment model.
+     * Deletes an existing Status model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -107,15 +107,15 @@ class CommentController extends Controller
     }
 
     /**
-     * Finds the Comment model based on its primary key value.
+     * Finds the Status model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Comment the loaded model
+     * @return Status the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if ($id !== null && ($model = Comment::find($id)) !== null)
+        if ($id !== null && ($model = Status::find($id)) !== null)
         {
             return $model;
         } else

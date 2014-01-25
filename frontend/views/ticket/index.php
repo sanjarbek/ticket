@@ -11,12 +11,24 @@ use yii\grid\GridView;
 $this->title = 'Заявки';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="ticket-index">
+<div class=" panel panel-primary ticket-index">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <?= Html::encode('Поиск') ?>
+        </h3>
+    </div>
+    <div class="panel-body">
 
-    <!--<h1><?php // echo Html::encode($this->title)                                 ?></h1>-->
+        <?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?php echo $this->render('_search', ['model' => $searchModel]); ?>
-
+    </div>
+</div>
+<div class=" panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <?= Html::encode('Результат поиска') ?>
+        </h3>
+    </div>
     <!--<p class="pull-right">-->
     <?php // echo Html::a('Создать заявку', ['create'], ['class' => 'btn btn-success']) ?>
     <!--</p>-->
@@ -26,6 +38,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
 //        'filterModel' => $searchModel,
         'layout' => '{summary}{items}{pager}',
+        'showHeader' => true,
+        'pager' => [
+            'class' => 'yii\widgets\LinkPager',
+            'maxButtonCount' => 5,
+            'options' => [
+                'class' => 'pagination pagination-sm',
+                'style' => 'margin-left: 10px; margin-top: 0px; margin-bottom: 5px;',
+            ]
+        ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 //            'id',
@@ -63,5 +84,4 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]);
     ?>
-
 </div>

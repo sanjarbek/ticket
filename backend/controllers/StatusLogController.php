@@ -1,17 +1,17 @@
 <?php
 
-namespace frontend\controllers;
+namespace backend\controllers;
 
-use common\models\Category;
-use common\models\CategoryQuery;
+use common\models\StatusLog;
+use common\models\StatusLogQuery;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\VerbFilter;
 
 /**
- * CategoryController implements the CRUD actions for Category model.
+ * StatusLogController implements the CRUD actions for StatusLog model.
  */
-class CategoryController extends Controller
+class StatusLogController extends Controller
 {
 
     public function behaviors()
@@ -27,12 +27,12 @@ class CategoryController extends Controller
     }
 
     /**
-     * Lists all Category models.
+     * Lists all StatusLog models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new CategoryQuery;
+        $searchModel = new StatusLogQuery;
         $dataProvider = $searchModel->search($_GET);
 
         return $this->render('index', [
@@ -42,7 +42,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Displays a single Category model.
+     * Displays a single StatusLog model.
      * @param integer $id
      * @return mixed
      */
@@ -54,13 +54,14 @@ class CategoryController extends Controller
     }
 
     /**
-     * Creates a new Category model.
+     * Creates a new StatusLog model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Category;
+        $model = new StatusLog;
+
         if ($model->load($_POST) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -73,7 +74,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Updates an existing Category model.
+     * Updates an existing StatusLog model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -94,7 +95,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Deletes an existing Category model.
+     * Deletes an existing StatusLog model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -106,15 +107,15 @@ class CategoryController extends Controller
     }
 
     /**
-     * Finds the Category model based on its primary key value.
+     * Finds the StatusLog model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Category the loaded model
+     * @return StatusLog the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if ($id !== null && ($model = Category::find($id)) !== null)
+        if ($id !== null && ($model = StatusLog::find($id)) !== null)
         {
             return $model;
         } else

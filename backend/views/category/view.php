@@ -11,24 +11,24 @@ $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Категории', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="category-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p class="pull-right">
-        <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?php
-        echo Html::a('Удалить', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data-confirm' => Yii::t('app', 'Are you sure to delete this item?'),
-            'data-method' => 'post',
-        ]);
-        ?>
-    </p>
-
+<div class=" panel panel-primary ticket-index">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <?= Html::encode($this->title) ?>
+            <?= Html::a('<i class="glyphicon glyphicon-pencil"></i>', ['update', 'id' => $model->id], ['class' => 'pull-right']) ?>
+            <?php
+//            echo Html::a('Удалить', ['delete', 'id' => $model->id], [
+//                'class' => 'btn btn-danger',
+//                'data-confirm' => Yii::t('app', 'Are you sure to delete this item?'),
+//                'data-method' => 'post',
+//            ]);
+            ?>
+        </h3>
+    </div>
     <?php
     echo DetailView::widget([
         'model' => $model,
+        'options' => ['class' => 'table table-striped table-bordered detail-view'],
         'attributes' => [
             'id',
             [

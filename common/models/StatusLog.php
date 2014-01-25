@@ -34,7 +34,21 @@ class StatusLog extends BaseModel
         return [
             [['ticket_id', 'status_id', 'begin_at'], 'required'],
             [['ticket_id', 'status_id', 'created_user', 'updated_user'], 'integer'],
-            [['begin_at', 'end_at', 'created_at', 'updated_at'], 'safe']
+            [['begin_at', 'end_at', 'created_at', 'updated_at'], 'safe'],
+            [['ticket_id'],
+                'exist',
+                'targetClass' => Ticket::className(),
+                'targetAttribute' => 'id',
+                'message' => 'Такой заявки не существует',
+                'skipOnError' => false,
+            ],
+            [['status_id'],
+                'exist',
+                'targetClass' => Status::className(),
+                'targetAttribute' => 'id',
+                'message' => 'Такого статуса не существует',
+                'skipOnError' => false,
+            ],
         ];
     }
 

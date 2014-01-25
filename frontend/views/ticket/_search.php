@@ -22,6 +22,12 @@ use kartik\widgets\Select2;
     ]);
     ?>
     <?php
+    echo $form->field($model, 'status_id')
+        ->dropDownList(common\models\Ticket::getStatusOptions(), [
+            'prompt' => 'Выберите статус...'
+    ]);
+    ?>
+    <?php
     echo $form->field($model, 'category_id')
         ->dropDownList(common\models\Ticket::getCategoriesList(), [
             'prompt' => 'Выберите категорию...'

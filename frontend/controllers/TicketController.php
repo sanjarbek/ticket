@@ -4,8 +4,10 @@ namespace frontend\controllers;
 
 use common\models\Ticket;
 use common\models\TicketQuery;
+use common\models\User;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\AccessDeniedHttpException;
 use yii\web\VerbFilter;
 
 /**
@@ -19,6 +21,22 @@ class TicketController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => \yii\web\AccessControl::className(),
+//                'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
+                    'authorized_access' => [
+                        'actions' => ['index', 'view', 'update', 'create'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    'guest_access' => [
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -70,6 +88,9 @@ class TicketController extends Controller
     {
         $this->layout = 'iframe-main.php';
 
+        if (User::find(\yii::$app->user->id)->role != User::ROLE_USER)
+            throw new AccessDeniedHttpException('Только простые пользователи могут заводить новую заявку.');
+
         $model = new Ticket;
 
         $model->status_id = 1;
@@ -99,21 +120,58 @@ class TicketController extends Controller
     public function actionUpdate($id)
     {
         $this->layout = 'iframe-main.php';
+
         $model = $this->findModel($id);
+        $user = User::find(\yii::$app->user->id);
 
-        $oldStatusLog = $model->currentLog;
+        $oldModel = clone $model;
+        $oldStatusLog = clone $model->currentLog;
 
-
-        if ($model->load($_POST) && $model->save())
+        if ($model->load($_POST))
         {
-            $newStatusLog = new \common\models\StatusLog();
-            $oldStatusLog->end_at = new \yii\db\Expression('NOW()');
-            $oldStatusLog->save();
-            $newStatusLog->ticket_id = $model->id;
-            $newStatusLog->status_id = $model->status_id;
-            $newStatusLog->begin_at = $oldStatusLog->end_at;
-            $newStatusLog->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+            if (($oldModel->status_id + 1) != $model->status_id)
+                throw new AccessDeniedHttpException('Изменяйте статус последовательно.');
+
+            if ($model->created_user == $user->id && $model->status_id == 4)
+            {
+                if ($model->save())
+                {
+                    $newStatusLog = new \common\models\StatusLog();
+                    $oldStatusLog->end_at = new \yii\db\Expression('NOW()');
+                    $oldStatusLog->save();
+                    $newStatusLog->ticket_id = $model->id;
+                    $newStatusLog->status_id = $model->status_id;
+                    $newStatusLog->begin_at = $oldStatusLog->end_at;
+                    $newStatusLog->save();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                } else
+                {
+                    return $this->render('update', [
+                            'model' => $model,
+                    ]);
+                }
+            }
+
+            if ($user->role != User::ROLE_USER && ($model->status_id == 2 || $model->status_id == 3))
+            {
+                if ($model->save())
+                {
+                    $newStatusLog = new \common\models\StatusLog();
+                    $oldStatusLog->end_at = new \yii\db\Expression('NOW()');
+                    $oldStatusLog->save();
+                    $newStatusLog->ticket_id = $model->id;
+                    $newStatusLog->status_id = $model->status_id;
+                    $newStatusLog->begin_at = $oldStatusLog->end_at;
+                    $newStatusLog->save();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                } else
+                {
+                    return $this->render('update', [
+                            'model' => $model,
+                    ]);
+                }
+            }
+            throw new AccessDeniedHttpException('У вас не хватает прав для внесения изменений.');
         } else
         {
             return $this->render('update', [

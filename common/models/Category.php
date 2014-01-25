@@ -60,17 +60,35 @@ class Category extends BaseModel
         return $this->hasMany(Ticket::className(), ['id' => 'category_id']);
     }
 
+    // TO DO
     public function getCategoriesList()
     {
-        $categories = Category::find()->select(['id', 'title'])
+        $categories = Category::find()->select(['id', 'parent_id', 'title'])
             ->orderBy('title')
             ->all();
 
         $categoriesArray = array();
         foreach ($categories as $key => $category)
+        {
             $categoriesArray[$category->id] = $category->title;
+        }
 
         return $categoriesArray;
+//        return $this->getTree($categories, 1);
+    }
+
+    private function getTree($tree, $pid)
+    {
+        $result = '';
+        foreach ($tree as $row)
+        {
+            if ($row['parent_id'] == $pid)
+            {
+                $result .= '  ' . $row['title'];
+                $result .= '  ' . $this->getTree($tree, $row['id']);
+            }
+        }
+        return $result;
     }
 
     public function getParent()

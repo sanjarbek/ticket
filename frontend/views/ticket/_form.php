@@ -12,7 +12,9 @@ use yii\widgets\ActiveForm;
 
 <div class="ticket-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php
+    $form = ActiveForm::begin();
+    ?>
 
     <?= $form->field($model, 'category_id')->dropDownList($model->getCategoriesList(), ['prompt' => 'Выберите категорию...']) ?>
 

@@ -11,14 +11,18 @@ $this->params['breadcrumbs'][] = ['label' => 'Категории', 'url' => ['in
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Редактировать';
 ?>
-<div class="category-update">
+<div class=" panel panel-primary ticket-index">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <?= Html::encode($this->title) ?>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <?php
+        echo $this->render('_form', [
+            'model' => $model,
+        ]);
+        ?>
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <?php
-    echo $this->render('_form', [
-        'model' => $model,
-    ]);
-    ?>
-
+    </div>
 </div>

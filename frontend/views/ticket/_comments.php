@@ -1,9 +1,9 @@
 <?php
 foreach ($comments as $comment):
     if ($comment->createdUser->id == $comment->ticket->createdUser->id)
-        $background_color = '#abc192';
+        $background_color = \yii::$app->params['messageOwnerColor'];
     else
-        $background_color = '#192abc';
+        $background_color = \yii::$app->params['messageReplierColor'];
     ?>
     <div class="comment well well-sm"  style="background-color: <?= $background_color ?>" id="c<?php echo $comment->id; ?>">
         <p class="time pull-right">

@@ -18,6 +18,11 @@ namespace common\models;
 class Ticket extends BaseModel
 {
 
+    const STATUS_NEW = 1;
+    const STATUS_VIEWED = 2;
+    const STATUS_INPROGRESS = 3;
+    const STATUS_FINISHED = 4;
+
     /**
      * @inheritdoc
      */
@@ -35,6 +40,20 @@ class Ticket extends BaseModel
             [['category_id', 'title', 'content'], 'required'],
             [['category_id', 'status_id', 'created_user', 'updated_user'], 'integer'],
             [['content'], 'string'],
+            ['status_id', 'in', 'range' => [
+                    self::STATUS_NEW,
+                    self::STATUS_VIEWED,
+                    self::STATUS_INPROGRESS,
+                    self::STATUS_FINISHED,
+                ]
+            ],
+            [['category_id'],
+                'exist',
+                'targetClass' => Category::className(),
+                'targetAttribute' => 'id',
+                'message' => 'Такой категории не существует',
+                'skipOnError' => false,
+            ],
             [['title'], 'string', 'max' => 100],
             [['created_at', 'updated_at'], 'safe'],
         ];
@@ -48,8 +67,8 @@ class Ticket extends BaseModel
         return [
             'id' => 'ID',
             'category_id' => 'Категория',
-            'title' => 'Заголовок',
-            'content' => 'Описание',
+            'title' => 'Тема',
+            'content' => 'Вопрос',
             'status_id' => 'Статус',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата редактирования',
@@ -105,7 +124,29 @@ class Ticket extends BaseModel
 
     public function getCurrentLog()
     {
-        return $this->hasOne(StatusLog::className(), ['id' => 'status_id']);
+        return $this->hasOne(StatusLog::className(), ['ticket_id' => 'id', 'status_id' => 'status_id']);
+    }
+
+    static public function getStatusOptions()
+    {
+        return array(
+            self::STATUS_NEW => 'Новый',
+            self::STATUS_VIEWED => 'Принят',
+            self::STATUS_INPROGRESS => 'В процессе',
+            self::STATUS_FINISHED => 'Закончен',
+        );
+    }
+
+    /**
+     *
+     * @return status text presentation
+     */
+    public function getStatusText()
+    {
+        $statusOptions = $this->getStatusOptions();
+        return (isset($statusOptions[$this->status]) ?
+                $statusOptions[$this->status] :
+                \yii::t('status', 'Неизвестный статус: ') . $this->status);
     }
 
 }

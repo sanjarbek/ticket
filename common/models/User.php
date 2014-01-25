@@ -11,6 +11,8 @@ use yii\web\IdentityInterface;
  * @package common\models
  *
  * @property integer $id
+ * @property string $firstname
+ * @property string $secondname
  * @property string $username
  * @property string $password_hash
  * @property string $password_reset_token
@@ -84,6 +86,21 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->getPrimaryKey();
     }
 
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'firstname' => 'Имя',
+            'secondname' => 'Фамилия',
+            'username' => 'Логин',
+            'password' => 'Пароль',
+            'role' => 'Роль',
+            'status' => 'Статус',
+            'create_time' => 'Дата создания',
+            'update_time' => 'Дата редактирования',
+        ];
+    }
+
     /**
      * @return string current user auth key
      */
@@ -116,10 +133,16 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             ['role', 'default', 'value' => self::ROLE_USER],
-            ['role', 'in', 'range' => [self::ROLE_USER]],
+            ['role', 'in', 'range' => [self::ROLE_ADMIN, self::ROLE_MODERATOR, self::ROLE_TECHNICIAN, self::ROLE_USER]],
+            ['firstname', 'filter', 'filter' => 'trim'],
+            ['firstname', 'required'],
+            ['firstname', 'string', 'min' => 3, 'max' => 30],
+            ['secondname', 'filter', 'filter' => 'trim'],
+            ['secondname', 'required'],
+            ['secondname', 'string', 'min' => 3, 'max' => 30],
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'required'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
+            ['username', 'string', 'min' => 2, 'max' => 15],
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
@@ -133,7 +156,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function scenarios()
     {
         return [
-            'signup' => ['username', 'email', 'password', '!status', '!role'],
+            'create' => ['firstname', 'secondname', 'username', 'email', 'password', '!status', 'role'],
+            'updateProfile' => ['firstname', 'secondname', 'username', 'email', 'status', 'role'],
             'resetPassword' => ['password'],
             'requestPasswordResetToken' => ['email'],
         ];
@@ -156,11 +180,11 @@ class User extends ActiveRecord implements IdentityInterface
         return false;
     }
 
-    public function getStatusOptions()
+    static public function getStatusOptions()
     {
         return array(
-            self::STATUS_DELETED => \yii::t('status', 'Неактивный'),
-            self::STATUS_ACTIVE => \yii::t('status', 'Активный'),
+            self::STATUS_DELETED => 'Неактивный',
+            self::STATUS_ACTIVE => 'Активный',
         );
     }
 
@@ -176,14 +200,14 @@ class User extends ActiveRecord implements IdentityInterface
                 \yii::t('status', 'Неизвестный статус: ') . $this->status);
     }
 
-    public function getRoleOptions()
+    static public function getRoleOptions()
     {
-        return array(
-            self::ROLE_ADMIN => \yii::t('role', 'Администратор'),
-            self::ROLE_MODERATOR => \yii::t('role', 'Модератор'),
-            self::ROLE_TECHNICIAN => \yii::t('role', 'Тех. поддержка'),
-            self::ROLE_USER => \yii::t('role', 'Пользователь'),
-        );
+        return [
+            self::ROLE_ADMIN => 'Администратор',
+            self::ROLE_MODERATOR => 'Модератор',
+            self::ROLE_TECHNICIAN => 'Тех. поддержка',
+            self::ROLE_USER => 'Пользователь',
+        ];
     }
 
     /**
@@ -200,7 +224,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function showName()
     {
-        return $this->username;
+        return $this->secondname . ' ' . $this->firstname;
     }
 
 }

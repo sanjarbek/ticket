@@ -4,13 +4,13 @@ use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
- * @var common\models\Ticket $model
+ * @var common\models\Category $model
  */
-$this->title = 'Создать заявку';
-$this->params['breadcrumbs'][] = ['label' => 'Заявки', 'url' => ['index']];
+$this->title = 'Создать новую категорию';
+$this->params['breadcrumbs'][] = ['label' => 'Категории', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class=" panel panel-primary">
+<div class=" panel panel-primary ticket-index">
     <div class="panel-heading">
         <h3 class="panel-title">
             <?= Html::encode($this->title) ?>
@@ -22,6 +22,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'model' => $model,
         ]);
         ?>
-
     </div>
+
 </div>

@@ -31,7 +31,14 @@ class Comment extends BaseModel
     {
         return [
             [['ticket_id', 'created_user', 'updated_user'], 'integer'],
-            [['content'], 'required'],
+            [['content', 'ticket_id'], 'required'],
+            [['ticket_id'],
+                'exist',
+                'targetClass' => Ticket::className(),
+                'targetAttribute' => 'id',
+                'message' => 'Такой заявки не существует',
+                'skipOnError' => TRUE,
+            ],
             [['created_at', 'updated_at', 'created_user', 'updated_user'], 'safe'],
             [['content'], 'string']
         ];
