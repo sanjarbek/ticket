@@ -9,6 +9,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\AccessDeniedHttpException;
 use yii\web\VerbFilter;
+use frontend\actions\ImageUploadAction;
+use frontend\actions\FileUploadAction;
 
 /**
  * TicketController implements the CRUD actions for Ticket model.
@@ -26,7 +28,7 @@ class TicketController extends Controller
 //                'only' => ['index', 'create', 'update', 'view', 'delete'],
                 'rules' => [
                     'authorized_access' => [
-                        'actions' => ['index', 'view', 'update', 'create'],
+                        'actions' => ['index', 'view', 'update', 'create', 'imageupload', 'fileupload'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -42,6 +44,26 @@ class TicketController extends Controller
                 'actions' => [
                     'delete' => ['post'],
                 ],
+            ],
+        ];
+    }
+
+    public function actions()
+    {
+        return [
+            'imageupload' => [
+                'class' => ImageUploadAction::className(),
+                'uploadPath' => \yii::$app->basePath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR,
+                'uploadUrl' => '/uploads/images',
+                'uploadCreate' => true,
+                'permissions' => 0755,
+            ],
+            'fileupload' => [
+                'class' => FileUploadAction::className(),
+                'uploadPath' => \yii::$app->basePath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR,
+                'uploadUrl' => '/uploads/files',
+                'uploadCreate' => true,
+                'permissions' => 0755,
             ],
         ];
     }

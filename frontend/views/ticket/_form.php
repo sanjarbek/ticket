@@ -20,7 +20,28 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => 100]) ?>
 
-    <?= $form->field($model, 'content')->textarea(['rows' => 6]) ?>
+    <div class="form-group">
+        <?php
+//    $form->field($model, 'content')->textarea(['rows' => 6]);
+        echo yii\imperavi\Widget::widget([
+            // You can either use it for model attribute
+            'model' => $model,
+            'attribute' => 'content',
+            // or just for input field
+//        'name' => 'my_input_name',
+            // Some options, see http://imperavi.com/redactor/docs/
+            'options' => [
+                'toolbar' => true,
+                'iframe' => false,
+                'uploadFields' => [
+                    \yii::$app->request->csrfVar => \yii::$app->request->csrfToken,
+                ],
+                'imageUpload' => $this->context->createUrl('/ticket/imageupload'),
+                'fileUpload' => $this->context->createUrl('/ticket/fileupload'),
+            ],
+        ]);
+        ?>
+    </div>
 
     <?php
     if (!$model->isNewRecord)
