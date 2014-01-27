@@ -59,6 +59,15 @@ class Ticket extends BaseModel
         ];
     }
 
+    public function scenarios()
+    {
+        return [
+            'default' => ['category_id', 'title', 'content'],
+            'update' => ['category_id', 'title', 'content', 'status_id'],
+            'updateStatus' => ['category_id', 'status_id'],
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -144,9 +153,9 @@ class Ticket extends BaseModel
     public function getStatusText()
     {
         $statusOptions = $this->getStatusOptions();
-        return (isset($statusOptions[$this->status]) ?
-                $statusOptions[$this->status] :
-                \yii::t('status', 'Неизвестный статус: ') . $this->status);
+        return (isset($statusOptions[$this->status_id]) ?
+                $statusOptions[$this->status_id] :
+                \yii::t('status', 'Неизвестный статус: ') . $this->status_id);
     }
 
 }

@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use common\models\User;
 
 /**
  * @var yii\web\View $this
@@ -17,8 +17,18 @@ $this->title = $model->title;
             <?php
             echo $model->id . '. ';
             echo Html::encode($this->title);
+            $user = User::find(\yii::$app->user->id);
+            if ($model->status_id != \common\models\Ticket::STATUS_FINISHED)
+            {
+                if ($user->role == User::ROLE_USER)
+                {
+                    echo Html::a('<i class="glyphicon glyphicon-pencil"></i>', ['update', 'id' => $model->id], ['class' => 'pull-right']);
+                } else
+                {
+                    echo Html::a('<i class="glyphicon glyphicon-pencil"></i>', ['stupdate', 'id' => $model->id], ['class' => 'pull-right']);
+                }
+            }
             ?>
-            <?= Html::a('<i class="glyphicon glyphicon-pencil"></i>', ['update', 'id' => $model->id], ['class' => 'pull-right']) ?>
         </h3>
     </div>
     <div class="panel-body">
@@ -31,8 +41,8 @@ $this->title = $model->title;
         </div>
         <div class="clearfix"></div>
         <div>
-            <p class="pull-left small"><strong>Статус: </strong><?= $model->status->name; ?></p>
-            <p class="pull-right small"><strong>Статус изменил: </strong><?= $model->createdUser->showName(); ?></p>
+            <p class="pull-left small"><strong>Статус: </strong><?= $model->getStatusText() ?></p>
+            <p class="pull-right small"><strong>Статус изменил: </strong><?= $model->currentLog->createdUser->showName(); ?></p>
         </div>
         <div class="clearfix"></div>
         <hr />
@@ -40,7 +50,7 @@ $this->title = $model->title;
         <p><strong>Вопрос</strong></p>
         <p>
             <?php
-            echo $model->content;
+            echo yii\helpers\HtmlPurifier::process($model->content);
             ?>
         </p>
         <hr />
@@ -51,18 +61,19 @@ $this->title = $model->title;
                 'comments' => $model->comments,
             ));
             ?>
-            <hr>
-            <h3>Добавить новый комментарий</h3>
 
-            <?php // if (Yii::app()->user->hasFlash('commentSubmitted')):       ?>
+            <?php // if (Yii::app()->user->hasFlash('commentSubmitted')):        ?>
             <!--        <div class="flash-success">
-            <?php // echo Yii::app()->user->getFlash('commentSubmitted');       ?>
+            <?php // echo Yii::app()->user->getFlash('commentSubmitted');         ?>
                     </div>-->
 
             <?php
-            echo $this->render('/comment/_form', [
-                'model' => $comment,
-            ]);
+            if ($model->status_id != \common\ models\Ticket::STATUS_FINISHED)
+            {
+                echo '<hr>';
+                echo '<h3>Добавить новый комментарий</h3>';
+                echo $this->render('/comment/_form', ['model' => $comment]);
+            }
             ?>
         </div><!-- comments -->
     </div>

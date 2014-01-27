@@ -38,7 +38,7 @@ AppAsset::register($this);
                 [
                     'label' => 'Новая заявка',
                     'url' => '#',
-                    'visible' => true,
+                    'visible' => !\yii::$app->user->isGuest,
                     'linkOptions' => [
                         'id' => 'testLink',
                         'onClick' => "javascript: $('#ticket-content').attr('src', '" . \yii::$app->urlManager->createUrl('/ticket/create') . "')",
@@ -75,7 +75,7 @@ AppAsset::register($this);
         <footer class="footer">
             <div class="container">
                 <p class="pull-left">&copy; ДОС КРЕДОБАНК <?= date('Y') ?></p>
-                <!--<p class="pull-right"><?php // echo Yii::powered()  ?></p>-->
+                <!--<p class="pull-right"><?php // echo Yii::powered()     ?></p>-->
             </div>
         </footer>
 

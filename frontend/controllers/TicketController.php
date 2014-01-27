@@ -28,7 +28,15 @@ class TicketController extends Controller
 //                'only' => ['index', 'create', 'update', 'view', 'delete'],
                 'rules' => [
                     'authorized_access' => [
-                        'actions' => ['index', 'view', 'update', 'create', 'imageupload', 'fileupload'],
+                        'actions' => [
+                            'index',
+                            'view',
+                            'update',
+                            'stupdate',
+                            'create',
+                            'imageupload',
+                            'fileupload',
+                        ],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -144,56 +152,101 @@ class TicketController extends Controller
         $this->layout = 'iframe-main.php';
 
         $model = $this->findModel($id);
+        $model->scenario = 'update';
         $user = User::find(\yii::$app->user->id);
+
+        // Проверка пользователя на права редактирования заявки
+        if ($user->role != User::ROLE_USER && $model->created_user != $user->id)
+            throw new AccessDeniedHttpException('Доступ закрыт.');
+
+        if ($model->status_id == Ticket::STATUS_FINISHED)
+            throw new AccessDeniedHttpException('Доступ для редактирования закрыта.');
 
         $oldModel = clone $model;
         $oldStatusLog = clone $model->currentLog;
 
         if ($model->load($_POST))
         {
-            if (($oldModel->status_id + 1) != $model->status_id)
-                throw new AccessDeniedHttpException('Изменяйте статус последовательно.');
+            if ($oldModel->status_id != $model->status_id && !($oldModel->status_id == Ticket::STATUS_INPROGRESS && $model->status_id == Ticket::STATUS_FINISHED))
+                throw new AccessDeniedHttpException('Вы не можете менять этот статус.');
 
-            if ($model->created_user == $user->id && $model->status_id == 4)
+            if ($model->save())
             {
-                if ($model->save())
-                {
-                    $newStatusLog = new \common\models\StatusLog();
-                    $oldStatusLog->end_at = new \yii\db\Expression('NOW()');
-                    $oldStatusLog->save();
-                    $newStatusLog->ticket_id = $model->id;
-                    $newStatusLog->status_id = $model->status_id;
-                    $newStatusLog->begin_at = $oldStatusLog->end_at;
-                    $newStatusLog->save();
-                    return $this->redirect(['view', 'id' => $model->id]);
-                } else
-                {
-                    return $this->render('update', [
-                            'model' => $model,
-                    ]);
-                }
+                $newStatusLog = new \common\models\StatusLog();
+                $oldStatusLog->end_at = new \yii\db\Expression('NOW()');
+                $oldStatusLog->save();
+                $newStatusLog->ticket_id = $model->id;
+                $newStatusLog->status_id = $model->status_id;
+                $newStatusLog->begin_at = $oldStatusLog->end_at;
+                $newStatusLog->save();
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else
+            {
+                return $this->render('update', [
+                        'model' => $model,
+                ]);
             }
+        } else
+        {
+            return $this->render('update', [
+                    'model' => $model,
+            ]);
+        }
+    }
 
-            if ($user->role != User::ROLE_USER && ($model->status_id == 2 || $model->status_id == 3))
+    /**
+     * Updates an existing Ticket model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionStupdate($id)
+    {
+        $this->layout = 'iframe-main.php';
+
+        $model = $this->findModel($id);
+        $model->scenario = 'updateStatus';
+
+        $user = User::find(\yii::$app->user->id);
+
+        // Проверка пользователя на права редактирования заявки
+        if ($user->role == User::ROLE_USER)
+            throw new AccessDeniedHttpException('Доступ закрыт.');
+
+        if ($model->status_id == Ticket::STATUS_FINISHED)
+            throw new AccessDeniedHttpException('Доступ для редактирования закрыта.');
+
+        $oldModel = clone $model;
+        $oldStatusLog = clone $model->currentLog;
+
+        if ($model->load($_POST))
+        {
+            if ($oldModel->status_id != $model->status_id)
             {
-                if ($model->save())
-                {
-                    $newStatusLog = new \common\models\StatusLog();
-                    $oldStatusLog->end_at = new \yii\db\Expression('NOW()');
-                    $oldStatusLog->save();
-                    $newStatusLog->ticket_id = $model->id;
-                    $newStatusLog->status_id = $model->status_id;
-                    $newStatusLog->begin_at = $oldStatusLog->end_at;
-                    $newStatusLog->save();
-                    return $this->redirect(['view', 'id' => $model->id]);
-                } else
-                {
-                    return $this->render('update', [
-                            'model' => $model,
-                    ]);
-                }
+                $error = true;
+                if ($oldModel->status_id == Ticket::STATUS_NEW && $model->status_id == Ticket::STATUS_VIEWED)
+                    $error = false;
+                else if ($oldModel->status_id == Ticket::STATUS_VIEWED && $model->status_id == Ticket::STATUS_INPROGRESS)
+                    $error = false;
+                if ($error)
+                    throw new AccessDeniedHttpException('Неизвестный статус.');
             }
-            throw new AccessDeniedHttpException('У вас не хватает прав для внесения изменений.');
+            if ($model->save())
+            {
+                $newStatusLog = new \common\models\StatusLog();
+                $oldStatusLog->end_at = new \yii\db\Expression('NOW()');
+                $oldStatusLog->save();
+                $newStatusLog->ticket_id = $model->id;
+                $newStatusLog->status_id = $model->status_id;
+                $newStatusLog->begin_at = $oldStatusLog->end_at;
+                $newStatusLog->save();
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else
+            {
+                return $this->render('update', [
+                        'model' => $model,
+                ]);
+            }
         } else
         {
             return $this->render('update', [

@@ -11,12 +11,22 @@ use yii\grid\GridView;
 $this->title = 'История изменений статусов заявок';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="status-log-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <?php echo $this->render('_search', ['model' => $searchModel]); ?>
-
+<div class=" panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <?= Html::encode('Поиск') ?>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+    </div>
+</div>
+<div class=" panel panel-primary ticket-index">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <?= Html::encode($this->title) ?>
+        </h3>
+    </div>
     <?php
     echo GridView::widget([
         'dataProvider' => $dataProvider,
