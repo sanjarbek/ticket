@@ -19,9 +19,8 @@ class Ticket extends BaseModel
 {
 
     const STATUS_NEW = 1;
-    const STATUS_VIEWED = 2;
-    const STATUS_INPROGRESS = 3;
-    const STATUS_FINISHED = 4;
+    const STATUS_INPROGRESS = 2;
+    const STATUS_FINISHED = 3;
 
     /**
      * @inheritdoc
@@ -42,7 +41,6 @@ class Ticket extends BaseModel
             [['content'], 'string'],
             ['status_id', 'in', 'range' => [
                     self::STATUS_NEW,
-                    self::STATUS_VIEWED,
                     self::STATUS_INPROGRESS,
                     self::STATUS_FINISHED,
                 ]
@@ -63,8 +61,8 @@ class Ticket extends BaseModel
     {
         return [
             'default' => ['category_id', 'title', 'content'],
-            'update' => ['category_id', 'title', 'content', 'status_id'],
-            'updateStatus' => ['category_id', 'status_id'],
+            'update' => ['category_id', 'title', 'content'],
+            'updateStatus' => ['status_id'],
         ];
     }
 
@@ -140,8 +138,7 @@ class Ticket extends BaseModel
     {
         return array(
             self::STATUS_NEW => 'Новый',
-            self::STATUS_VIEWED => 'Принят',
-            self::STATUS_INPROGRESS => 'В процессе',
+            self::STATUS_INPROGRESS => 'Принят',
             self::STATUS_FINISHED => 'Закончен',
         );
     }

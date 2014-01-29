@@ -21,12 +21,14 @@ class TicketQuery extends Model
     public $updated_at;
     public $created_user;
     public $updated_user;
+    public $from_date;
+    public $to_date;
 
     public function rules()
     {
         return [
             [['id', 'category_id', 'status_id', 'created_user', 'updated_user'], 'integer'],
-            [['title', 'created_at'], 'safe'],
+            [['title', 'created_at', 'from_date', 'to_date'], 'safe'],
         ];
     }
 
@@ -45,6 +47,7 @@ class TicketQuery extends Model
             'updated_at' => 'Дата редактирования',
             'created_user' => 'Создал',
             'updated_user' => 'Редактировал',
+            'from_date' => 'Период',
         ];
     }
 
@@ -53,6 +56,9 @@ class TicketQuery extends Model
         $query = Ticket::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
         ]);
 
         if (!($this->load($params) && $this->validate()))
@@ -65,10 +71,21 @@ class TicketQuery extends Model
         $this->addCondition($query, 'title', true);
         $this->addCondition($query, 'content', true);
         $this->addCondition($query, 'status_id');
-        $this->addCondition($query, 'created_at', true);
-        $this->addCondition($query, 'updated_at');
         $this->addCondition($query, 'created_user');
         $this->addCondition($query, 'updated_user');
+
+        if (!isset($this->from_date) || trim($this->from_date) == '')
+            $from_date = date('2014-01-01 00:00:00');
+        else
+            $from_date = date('Y-m-d 00:00:00', strtotime($this->from_date));
+
+        if (!isset($this->to_date) || trim($this->to_date) == '')
+            $to_date = date('Y-m-d 23:59:59', time());
+        else
+            $to_date = date('Y-m-d 23:59:59', strtotime($this->to_date));
+
+        $query->andWhere(['between', 'created_at', $from_date, $to_date]);
+
         return $dataProvider;
     }
 

@@ -21,8 +21,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'title')->textInput(['maxlength' => 100]) ?>
 
     <div class="form-group">
+        <label class="control-label" for="ticket-content">Вопрос</label>
         <?php
-//    $form->field($model, 'content')->textarea(['rows' => 6]);
         echo yii\imperavi\Widget::widget([
             'model' => $model,
             'attribute' => 'content',
@@ -44,12 +44,6 @@ use yii\widgets\ActiveForm;
         ]);
         ?>
     </div>
-
-    <?php
-    if (!$model->isNewRecord)
-        echo $form->field($model, 'status_id')->dropDownList($model->getStatusOptions());
-    ?>
-
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Сохранить изменения', ['class' => $model->isNewRecord ? 'btn btn-sm btn-success' : 'btn btn-sm btn-primary']) ?>
     </div>

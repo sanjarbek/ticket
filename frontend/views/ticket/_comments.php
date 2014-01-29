@@ -10,11 +10,11 @@ foreach ($comments as $comment):
             <?= date('d.m.Y H:i:s', strtotime($comment->created_at)) ?>
         </p>
         <div class="author">
-            <strong><?= $comment->createdUser->showName() ?></strong> написал
+            <strong><?= yii\helpers\Html::encode($comment->createdUser->showName()) ?></strong> написал
         </div>
         <div class="clearfix"></div>
         <div class="content">
-            <?php echo yii\helpers\Html::encode($comment->content); ?>
+            <?php echo yii\helpers\HtmlPurifier::process($comment->content); ?>
         </div>
 
     </div> <!--comment--> 

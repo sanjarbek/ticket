@@ -52,7 +52,7 @@ class Comment extends BaseModel
         return [
             'id' => 'ID',
             'ticket_id' => 'Номер заявки',
-            'content' => 'Описание',
+            'content' => 'Новый комментарий',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата редактирования',
             'created_user' => 'Создал',

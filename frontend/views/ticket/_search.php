@@ -21,12 +21,7 @@ use kartik\widgets\Select2;
             'type' => ActiveForm::TYPE_VERTICAL,
     ]);
     ?>
-    <?php
-    echo $form->field($model, 'status_id')
-        ->dropDownList(common\models\Ticket::getStatusOptions(), [
-            'prompt' => 'Выберите статус...'
-    ]);
-    ?>
+    <?php echo $form->field($model, 'status_id', ['template' => '{input}'])->input('hidden') ?>
     <?php
     echo $form->field($model, 'category_id')
         ->dropDownList(common\models\Ticket::getCategoriesList(), [
@@ -48,40 +43,47 @@ use kartik\widgets\Select2;
 //    ]);
     ?>
 
-    <?php // echo $form->field($model, 'title')   ?>
+    <?php // echo $form->field($model, 'title')    ?>
 
-    <?php // echo $form->field($model, 'content')    ?>
+    <?php // echo $form->field($model, 'content')     ?>
 
-    <?php // echo $form->field($model, 'status_id')    ?>
+    <?php // echo $form->field($model, 'status_id')     ?>
 
-    <?php // echo $form->field($model, 'created_at')   ?>
+    <?php // echo $form->field($model, 'created_at')    ?>
 
     <?php
+//    echo DatePicker::widget([
+//        'model' => $model,
+//        'form' => $form,
+//        'attribute' => 'created_at',
+//        'options' => [
+//            'placeholder' => 'Выберите дату заявки...',
+//        ],
+//        'pluginOptions' => [
+//            'language' => 'ru',
+//            'format' => 'yyyy-mm-dd',
+//            'todayHighlight' => true,
+//            'autoclose' => true
+//        ]
+//    ]);
     echo DatePicker::widget([
         'model' => $model,
+        'attribute' => 'from_date',
+        'attribute2' => 'to_date',
         'form' => $form,
-        'attribute' => 'created_at',
-        'options' => [
-            'placeholder' => 'Выберите дату заявки...',
-        ],
+        'type' => DatePicker::TYPE_RANGE,
+        'separator' => 'по',
         'pluginOptions' => [
             'language' => 'ru',
-            'format' => 'yyyy-mm-dd',
-            'todayHighlight' => true,
-            'autoclose' => true
+            'autoclose' => true,
+            'format' => 'dd.mm.yyyy'
         ]
     ]);
     ?>
 
-    <?php // echo $form->field($model, 'updated_at')    ?>
-
-    <?php // echo $form->field($model, 'created_user')    ?>
-
-    <?php // echo $form->field($model, 'updated_user')      ?>
-
     <div class="form-group pull-right">
-        <?= Html::submitButton('Поиск', ['class' => 'btn btn-sm btn-primary']) ?>
-        <?= Html::resetButton('Очистить', ['class' => 'btn btn-sm btn-default']) ?>
+        <?= Html::submitButton('Применить фильтр', ['class' => 'btn btn-sm btn-primary']) ?>
+        <?php // echo Html::resetButton('Очистить', ['class' => 'btn btn-sm btn-default']) ?>
     </div>
     <div class="clearfix"></div>
 

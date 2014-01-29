@@ -18,7 +18,7 @@ use frontend\actions\FileUploadAction;
 class TicketController extends Controller
 {
 
-    public $layout = 'main.php';
+    public $layout = 'main_user.php';
 
     public function behaviors()
     {
@@ -82,8 +82,17 @@ class TicketController extends Controller
      */
     public function actionIndex()
     {
-        $this->layout = 'layout1.php';
+        $user = User::find(\yii::$app->user->id);
+//        if ( $user->role == User::ROLE_USER)
+//            $this->layout = 'main_user.php';
+//        else
+//            $this->layout = 'main_tech.php';
         $searchModel = new TicketQuery;
+
+
+        if ($user->role == User::ROLE_USER)
+            $_GET['TicketQuery']['created_user'] = \yii::$app->user->id;
+
         $dataProvider = $searchModel->search($_GET);
 
         return $this->render('index', [
@@ -204,55 +213,65 @@ class TicketController extends Controller
     {
         $this->layout = 'iframe-main.php';
 
+        if (!\yii::$app->request->isAjax)
+            throw new AccessDeniedHttpException('Only ajax request will be accepted.');
+
         $model = $this->findModel($id);
         $model->scenario = 'updateStatus';
 
         $user = User::find(\yii::$app->user->id);
 
-        // Проверка пользователя на права редактирования заявки
-        if ($user->role == User::ROLE_USER)
-            throw new AccessDeniedHttpException('Доступ закрыт.');
-
         if ($model->status_id == Ticket::STATUS_FINISHED)
-            throw new AccessDeniedHttpException('Доступ для редактирования закрыта.');
+            throw new AccessDeniedHttpException('Forbidden for edit.');
 
         $oldModel = clone $model;
         $oldStatusLog = clone $model->currentLog;
 
+        $error = TRUE;
         if ($model->load($_POST))
         {
-            if ($oldModel->status_id != $model->status_id)
+            if ($user->role == User::ROLE_USER)
             {
-                $error = true;
-                if ($oldModel->status_id == Ticket::STATUS_NEW && $model->status_id == Ticket::STATUS_VIEWED)
-                    $error = false;
-                else if ($oldModel->status_id == Ticket::STATUS_VIEWED && $model->status_id == Ticket::STATUS_INPROGRESS)
-                    $error = false;
-                if ($error)
-                    throw new AccessDeniedHttpException('Неизвестный статус.');
+                if ($user->id == $model->created_user && $oldModel->status_id == Ticket::STATUS_INPROGRESS && $model->status_id == Ticket::STATUS_FINISHED)
+                {
+                    $error = FALSE;
+                }
+            } else if ($user->role == User::ROLE_TECHNICIAN)
+            {
+
+                if ($oldModel->status_id == Ticket::STATUS_INPROGRESS && $model->status_id == Ticket::STATUS_NEW && $oldModel->currentLog->created_user == $user->id)
+                {
+                    $error = FALSE;
+                } else if ($oldModel->status_id == Ticket::STATUS_NEW && $model->status_id == Ticket::STATUS_INPROGRESS)
+                {
+                    $error = FALSE;
+                }
             }
-            if ($model->save())
+            if (!$error)
             {
-                $newStatusLog = new \common\models\StatusLog();
-                $oldStatusLog->end_at = new \yii\db\Expression('NOW()');
-                $oldStatusLog->save();
-                $newStatusLog->ticket_id = $model->id;
-                $newStatusLog->status_id = $model->status_id;
-                $newStatusLog->begin_at = $oldStatusLog->end_at;
-                $newStatusLog->save();
-                return $this->redirect(['view', 'id' => $model->id]);
+                if ($model->save())
+                {
+                    $newStatusLog = new \common\models\StatusLog();
+                    $oldStatusLog->end_at = new \yii\db\Expression('NOW()');
+                    $oldStatusLog->save();
+                    $newStatusLog->ticket_id = $model->id;
+                    $newStatusLog->status_id = $model->status_id;
+                    $newStatusLog->begin_at = $oldStatusLog->end_at;
+                    $newStatusLog->save();
+//                    echo \yii\helpers\Json::encode('Заявка принята.');
+                    return \yii\helpers\Json::encode('Finished successfully.');
+                } else
+                {
+                    return \yii\helpers\Json::encode('There is error on saving.');
+                }
             } else
             {
-                return $this->render('update', [
-                        'model' => $model,
-                ]);
+//                return \yii\helpers\Json::encode('У вас нехватает прав доступа для выполнения данного действия.');
+                return \yii\helpers\Json::encode('You do not have enough permissions to make this operation.');
             }
-        } else
-        {
-            return $this->render('update', [
-                    'model' => $model,
-            ]);
         }
+//            return \yii\helpers\Json::encode('Произошла ошибка при загрузке данных.');
+        return \yii\helpers\Json::encode('There is error on loading datas.');
     }
 
     /**
