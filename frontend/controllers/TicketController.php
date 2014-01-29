@@ -11,6 +11,7 @@ use yii\web\AccessDeniedHttpException;
 use yii\web\VerbFilter;
 use frontend\actions\ImageUploadAction;
 use frontend\actions\FileUploadAction;
+use yii\helpers\Json;
 
 /**
  * TicketController implements the CRUD actions for Ticket model.
@@ -83,10 +84,17 @@ class TicketController extends Controller
     public function actionIndex()
     {
         $user = User::find(\yii::$app->user->id);
-//        if ( $user->role == User::ROLE_USER)
-//            $this->layout = 'main_user.php';
-//        else
-//            $this->layout = 'main_tech.php';
+        $layout = 'main.php';
+        $view_file = '';
+        if ($user->role == User::ROLE_USER)
+        {
+            $this->layout = 'main_user.php';
+            $view_file = 'user/index';
+        } else
+        {
+            $this->layout = 'main_tech.php';
+            $view_file = 'tech/index';
+        }
         $searchModel = new TicketQuery;
 
 
@@ -95,7 +103,7 @@ class TicketController extends Controller
 
         $dataProvider = $searchModel->search($_GET);
 
-        return $this->render('index', [
+        return $this->render($view_file, [
                 'dataProvider' => $dataProvider,
                 'searchModel' => $searchModel,
         ]);
@@ -214,7 +222,10 @@ class TicketController extends Controller
         $this->layout = 'iframe-main.php';
 
         if (!\yii::$app->request->isAjax)
-            throw new AccessDeniedHttpException('Only ajax request will be accepted.');
+        {
+            echo Json::encode('Only ajax request will be accepted.');
+            exit;
+        }
 
         $model = $this->findModel($id);
         $model->scenario = 'updateStatus';
@@ -222,7 +233,10 @@ class TicketController extends Controller
         $user = User::find(\yii::$app->user->id);
 
         if ($model->status_id == Ticket::STATUS_FINISHED)
-            throw new AccessDeniedHttpException('Forbidden for edit.');
+        {
+            echo Json::encode('Forbidden for edit.');
+            exit;
+        }
 
         $oldModel = clone $model;
         $oldStatusLog = clone $model->currentLog;
@@ -258,20 +272,21 @@ class TicketController extends Controller
                     $newStatusLog->status_id = $model->status_id;
                     $newStatusLog->begin_at = $oldStatusLog->end_at;
                     $newStatusLog->save();
-//                    echo \yii\helpers\Json::encode('Заявка принята.');
-                    return \yii\helpers\Json::encode('Finished successfully.');
+//                    echo Json::encode('Заявка принята.');
+                    echo Json::encode('Finished successfully.');
                 } else
                 {
-                    return \yii\helpers\Json::encode('There is error on saving.');
+                    echo Json::encode('There is error on saving.');
                 }
             } else
             {
 //                return \yii\helpers\Json::encode('У вас нехватает прав доступа для выполнения данного действия.');
-                return \yii\helpers\Json::encode('You do not have enough permissions to make this operation.');
+                echo Json::encode('You do not have enough permissions to make this operation.');
             }
+        } else
+        {
+            echo Json::encode('There is error on loading datas.');
         }
-//            return \yii\helpers\Json::encode('Произошла ошибка при загрузке данных.');
-        return \yii\helpers\Json::encode('There is error on loading datas.');
     }
 
     /**

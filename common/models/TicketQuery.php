@@ -53,9 +53,11 @@ class TicketQuery extends Model
 
     public function search($params)
     {
-        $query = Ticket::find();
+        $query = Ticket::find()->innerJoinWith('currentLog');
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+//            'sort' => ['created_at' => SORT_DESC],
             'pagination' => [
                 'pageSize' => 10,
             ],
@@ -64,6 +66,26 @@ class TicketQuery extends Model
         if (!($this->load($params) && $this->validate()))
         {
             return $dataProvider;
+        }
+
+        if (User::find(\yii::$app->user->id)->role == User::ROLE_TECHNICIAN)
+        {
+            if ($this->status_id != Ticket::STATUS_NEW)
+            {
+                // find customers together with their country and orders of status 1 
+                // Customer::find()->with([ 'orders' => function($query) 
+                // { $query->andWhere('status = 1'); }, 'country', ])->all();
+//                $query->joinWith(['currentLog' => function($query)
+//                {
+                $query->andWhere(['status_logs.created_user' => \yii::$app->user->id]);
+//                }]);
+//                $query->join('LEFT JOIN', 'status_logs st', [
+//                    'st.ticket_id' => 't.id',
+//                    'st.status_id' => $this->status_id,
+//                    'st.created_user' => \yii::$app->user->id,
+//                ]);
+//                $query->andWhere(['currentLog.created_user' => \yii::$app->user->id]);
+            }
         }
 
         $this->addCondition($query, 'id');
@@ -84,7 +106,7 @@ class TicketQuery extends Model
         else
             $to_date = date('Y-m-d 23:59:59', strtotime($this->to_date));
 
-        $query->andWhere(['between', 'created_at', $from_date, $to_date]);
+        $query->andWhere(['between', 'tickets.created_at', $from_date, $to_date]);
 
         return $dataProvider;
     }
@@ -98,10 +120,10 @@ class TicketQuery extends Model
         }
         if ($partialMatch)
         {
-            $query->andWhere(['like', $attribute, $value]);
+            $query->andWhere(['like', 'tickets.' + $attribute, $value]);
         } else
         {
-            $query->andWhere([$attribute => $value]);
+            $query->andWhere([('tickets.' . $attribute) => $value]);
         }
     }
 

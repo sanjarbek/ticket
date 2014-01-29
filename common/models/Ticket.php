@@ -96,7 +96,7 @@ class Ticket extends BaseModel
             ->orderBy('title')
             ->all();
 
-        $categoriesArray = array();
+        $categoriesArray = [];
         foreach ($categories as $key => $category)
             $categoriesArray[$category->id] = $category->title;
 
@@ -153,6 +153,17 @@ class Ticket extends BaseModel
         return (isset($statusOptions[$this->status_id]) ?
                 $statusOptions[$this->status_id] :
                 \yii::t('status', 'Неизвестный статус: ') . $this->status_id);
+    }
+
+    static public function getCreatedUsersList()
+    {
+        $users = User::find()->where(['role' => User::ROLE_USER])->all();
+
+        $usersArray = array();
+        foreach ($users as $key => $user)
+            $usersArray["$user->id"] = $user->showName();
+
+        return $usersArray;
     }
 
 }

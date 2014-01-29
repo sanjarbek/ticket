@@ -28,7 +28,7 @@ AppAsset::register($this);
             <?php
             NavBar::begin([
                 'brandLabel' => 'Служба технической поддержки',
-                'brandUrl' => Yii::$app->homeUrl,
+                'brandUrl' => ['/ticket/index'],
                 'options' => [
                     'class' => 'navbar-inverse navbar-fixed-top',
                 ],
@@ -65,7 +65,7 @@ AppAsset::register($this);
         <footer class="footer">
             <div class="container">
                 <p class="pull-left">&copy; ДОС КРЕДОБАНК <?= date('Y') ?></p>
-                <!--<p class="pull-right"><?php // echo Yii::powered()      ?></p>-->
+                <!--<p class="pull-right"><?php // echo Yii::powered()       ?></p>-->
             </div>
         </footer>
 
